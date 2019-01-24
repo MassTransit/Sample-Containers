@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <RootNamespace>Sample_Autofac</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MassTransit" Version="5.2.3" />
+    <PackageReference Include="MassTransit.Autofac" Version="5.2.3" />
+    <PackageReference Include="MassTransit.Automatonymous.Autofac" Version="5.2.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Sample.Components\Sample.Components.csproj" />
+  </ItemGroup>
+
+</Project>

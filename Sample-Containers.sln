@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample-Autofac", "Sample-Autofac\Sample-Autofac.csproj", "{459F5E30-8F4A-4A0A-9E9E-D4F08180EA59}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.Contracts", "Sample.Contracts\Sample.Contracts.csproj", "{455F8888-B3CB-4467-B3E6-D3F6E0B3FBBC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.Components", "Sample.Components\Sample.Components.csproj", "{CF024BAF-1C16-4BA7-B323-350FC2EFA85B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{459F5E30-8F4A-4A0A-9E9E-D4F08180EA59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{459F5E30-8F4A-4A0A-9E9E-D4F08180EA59}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{459F5E30-8F4A-4A0A-9E9E-D4F08180EA59}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{459F5E30-8F4A-4A0A-9E9E-D4F08180EA59}.Release|Any CPU.Build.0 = Release|Any CPU
+		{455F8888-B3CB-4467-B3E6-D3F6E0B3FBBC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{455F8888-B3CB-4467-B3E6-D3F6E0B3FBBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{455F8888-B3CB-4467-B3E6-D3F6E0B3FBBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{455F8888-B3CB-4467-B3E6-D3F6E0B3FBBC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF024BAF-1C16-4BA7-B323-350FC2EFA85B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF024BAF-1C16-4BA7-B323-350FC2EFA85B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF024BAF-1C16-4BA7-B323-350FC2EFA85B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF024BAF-1C16-4BA7-B323-350FC2EFA85B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
