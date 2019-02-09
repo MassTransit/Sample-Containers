@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Autofac;
+using Castle.MicroKernel.Registration;
+using Castle.Windsor;
 using GreenPipes;
 using MassTransit;
-using MassTransit.Saga;
 using MassTransit.Util;
 using Sample.Components;
 using Sample.Contracts;
@@ -53,7 +53,7 @@ namespace Sample_Autofac
             }
         }
 
-        static async Task Submit(IContainer container)
+        static async Task Submit(IWindsorContainer container)
         {
             IBus bus = container.Resolve<IBus>();
 
@@ -66,26 +66,27 @@ namespace Sample_Autofac
             }, Pipe.Execute<SendContext>(sendContext => sendContext.ConversationId = sendContext.CorrelationId = orderId));
         }
 
-        static IContainer ConfigureContainer()
+        static IWindsorContainer ConfigureContainer()
         {
-            var builder = new ContainerBuilder();
-            builder.AddMassTransit(cfg =>
+            var container = new WindsorContainer();
+            container.AddMassTransit(cfg =>
             {
                 cfg.AddConsumersFromNamespaceContaining<SubmitOrderConsumer>();
                 cfg.AddSagaStateMachinesFromNamespaceContaining(typeof(OrderStateMachine));
 
-                cfg.AddBus(BusFactory);
+                cfg.AddBus(kernel => BusFactory(container));
             });
 
-            builder.RegisterType<PublishOrderEventActivity>();
-            builder.RegisterInMemorySagaRepository();
+            container.Register(Component.For<PublishOrderEventActivity>());
 
-            return builder.Build();
+            container.RegisterInMemorySagaRepository();
+
+            return container;
         }
 
-        static IBusControl BusFactory(IComponentContext context)
+        static IBusControl BusFactory(IWindsorContainer container)
         {
-            return Bus.Factory.CreateUsingInMemory(cfg => cfg.ConfigureEndpoints(context));
+            return Bus.Factory.CreateUsingInMemory(cfg => cfg.ConfigureEndpoints(container));
         }
     }
 }

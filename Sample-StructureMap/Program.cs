@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Autofac;
+using Automatonymous;
 using GreenPipes;
 using MassTransit;
 using MassTransit.Saga;
 using MassTransit.Util;
 using Sample.Components;
 using Sample.Contracts;
+using StructureMap;
 
-namespace Sample_Autofac
+namespace Sample_StructureMap
 {
     static class Program
     {
@@ -16,7 +17,7 @@ namespace Sample_Autofac
         {
             var container = ConfigureContainer();
 
-            var bus = container.Resolve<IBusControl>();
+            var bus = container.GetInstance<IBusControl>();
 
             try
             {
@@ -55,7 +56,7 @@ namespace Sample_Autofac
 
         static async Task Submit(IContainer container)
         {
-            IBus bus = container.Resolve<IBus>();
+            IBus bus = container.GetInstance<IBus>();
 
             var orderId = NewId.NextGuid();
 
@@ -68,22 +69,23 @@ namespace Sample_Autofac
 
         static IContainer ConfigureContainer()
         {
-            var builder = new ContainerBuilder();
-            builder.AddMassTransit(cfg =>
+            return new Container(builder =>
             {
-                cfg.AddConsumersFromNamespaceContaining<SubmitOrderConsumer>();
-                cfg.AddSagaStateMachinesFromNamespaceContaining(typeof(OrderStateMachine));
+                builder.AddMassTransit(cfg =>
+                {
+                    cfg.AddConsumersFromNamespaceContaining<SubmitOrderConsumer>();
+                    cfg.AddSagaStateMachinesFromNamespaceContaining(typeof(OrderStateMachine));
 
-                cfg.AddBus(BusFactory);
+                    cfg.AddBus(BusFactory);
+                });
+
+                builder.ForConcreteType<PublishOrderEventActivity>();
+
+                builder.RegisterInMemorySagaRepository();
             });
-
-            builder.RegisterType<PublishOrderEventActivity>();
-            builder.RegisterInMemorySagaRepository();
-
-            return builder.Build();
         }
 
-        static IBusControl BusFactory(IComponentContext context)
+        static IBusControl BusFactory(IContext context)
         {
             return Bus.Factory.CreateUsingInMemory(cfg => cfg.ConfigureEndpoints(context));
         }

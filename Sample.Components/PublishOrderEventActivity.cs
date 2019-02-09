@@ -12,7 +12,7 @@ namespace Sample.Components
     {
         readonly IPublishEndpoint _publishEndpoint;
 
-        public PublishOrderEventActivity(IPublishEndpoint publishEndpoint)
+        public PublishOrderEventActivity(ConsumeContext publishEndpoint)
         {
             _publishEndpoint = publishEndpoint;
         }

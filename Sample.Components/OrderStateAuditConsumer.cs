@@ -10,6 +10,9 @@ namespace Sample.Components
     {
         public async Task Consume(ConsumeContext<OrderStateCreated> context)
         {
+            if (context.Message.OrderId != context.ConversationId)
+                await Console.Error.WriteLineAsync("ConversationId was not correct!");
+
             await Console.Out.WriteLineAsync($"OrderState(created): {context.Message.OrderId} ({context.ConversationId})");
         }
     }

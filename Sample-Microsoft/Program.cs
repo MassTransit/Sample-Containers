@@ -1,22 +1,21 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Autofac;
 using GreenPipes;
 using MassTransit;
-using MassTransit.Saga;
 using MassTransit.Util;
+using Microsoft.Extensions.DependencyInjection;
 using Sample.Components;
 using Sample.Contracts;
 
-namespace Sample_Autofac
+namespace Sample_Microsoft
 {
     static class Program
     {
         static void Main()
         {
-            var container = ConfigureContainer();
+            var serviceProvider = ConfigureServiceProvider();
 
-            var bus = container.Resolve<IBusControl>();
+            var bus = serviceProvider.GetRequiredService<IBusControl>();
 
             try
             {
@@ -37,7 +36,7 @@ namespace Sample_Autofac
                                 break;
 
                             case "submit":
-                                TaskUtil.Await(() => Submit(container));
+                                TaskUtil.Await(() => Submit(serviceProvider));
                                 break;
                         }
                     }
@@ -53,9 +52,9 @@ namespace Sample_Autofac
             }
         }
 
-        static async Task Submit(IContainer container)
+        static async Task Submit(IServiceProvider provider)
         {
-            IBus bus = container.Resolve<IBus>();
+            IBus bus = provider.GetRequiredService<IBus>();
 
             var orderId = NewId.NextGuid();
 
@@ -66,10 +65,10 @@ namespace Sample_Autofac
             }, Pipe.Execute<SendContext>(sendContext => sendContext.ConversationId = sendContext.CorrelationId = orderId));
         }
 
-        static IContainer ConfigureContainer()
+        static IServiceProvider ConfigureServiceProvider()
         {
-            var builder = new ContainerBuilder();
-            builder.AddMassTransit(cfg =>
+            var collection = new ServiceCollection();
+            collection.AddMassTransit(cfg =>
             {
                 cfg.AddConsumersFromNamespaceContaining<SubmitOrderConsumer>();
                 cfg.AddSagaStateMachinesFromNamespaceContaining(typeof(OrderStateMachine));
@@ -77,15 +76,15 @@ namespace Sample_Autofac
                 cfg.AddBus(BusFactory);
             });
 
-            builder.RegisterType<PublishOrderEventActivity>();
-            builder.RegisterInMemorySagaRepository();
+            collection.AddScoped<PublishOrderEventActivity>();
+            collection.RegisterInMemorySagaRepository();
 
-            return builder.Build();
+            return collection.BuildServiceProvider();
         }
 
-        static IBusControl BusFactory(IComponentContext context)
+        static IBusControl BusFactory(IServiceProvider provider)
         {
-            return Bus.Factory.CreateUsingInMemory(cfg => cfg.ConfigureEndpoints(context));
+            return Bus.Factory.CreateUsingInMemory(cfg => cfg.ConfigureEndpoints(provider));
         }
     }
 }
